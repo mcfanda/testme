@@ -47,6 +47,8 @@ testMeResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         info = function() private$.items[["info"]],
+        oneSmartTable = function() private$.items[["oneSmartTable"]],
+        keylessArray = function() private$.items[["keylessArray"]],
         residuals = function() private$.items[["residuals"]],
         multi_residuals = function() private$.items[["multi_residuals"]]),
     private = list(),
@@ -76,6 +78,50 @@ testMeResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="A number")),
                 clearWith=list(
                     "dep")))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="oneSmartTable",
+                title="one Smart Table",
+                columns=list(
+                    list(
+                        `name`="info", 
+                        `type`="text", 
+                        `title`="", 
+                        `combineBelow`=TRUE),
+                    list(
+                        `name`="specs", 
+                        `type`="text", 
+                        `title`=""),
+                    list(
+                        `name`="value", 
+                        `type`="number", 
+                        `title`="A number"),
+                    list(
+                        `name`="mobile", 
+                        `type`="number", 
+                        `title`="A mobile", 
+                        `visible`=FALSE))))
+            self$add(jmvcore::Array$new(
+                options=options,
+                name="keylessArray",
+                title="keyless Array",
+                template=jmvcore::Table$new(
+                    options=options,
+                    title="A title with a custom key:  ___key___",
+                    columns=list(
+                        list(
+                            `name`="info", 
+                            `type`="text", 
+                            `title`="", 
+                            `combineBelow`=TRUE),
+                        list(
+                            `name`="specs", 
+                            `type`="text", 
+                            `title`=""),
+                        list(
+                            `name`="value", 
+                            `type`="number", 
+                            `title`="A number")))))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="residuals",
@@ -127,6 +173,8 @@ testMeBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$info} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$oneSmartTable} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$keylessArray} \tab \tab \tab \tab \tab an array of tables \cr
 #'   \code{results$residuals} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$multi_residuals} \tab \tab \tab \tab \tab an output \cr
 #' }

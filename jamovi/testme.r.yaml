@@ -24,6 +24,43 @@ items:
     clearWith:
         - dep
 
+  - name: oneSmartTable
+    title: one Smart Table
+    type: Table
+    columns:
+       - name: info
+         type: text
+         title: ""
+         combineBelow: true
+       - name: specs
+         type: text
+         title: ""
+       - name: value
+         type: number
+         title: A number
+       - name: mobile
+         type: number
+         title: A mobile
+         visible: false
+
+
+  - name: keylessArray
+    title: keyless Array
+    type: Array
+    template:
+              title:  "A title with a custom key:  ___key___"
+              type: Table
+              columns:
+                 - name: info
+                   type: text
+                   title: ""
+                   combineBelow: true
+                 - name: specs
+                   type: text
+                   title: ""
+                 - name: value
+                   type: number
+                   title: A number
 
 
   - name: residuals

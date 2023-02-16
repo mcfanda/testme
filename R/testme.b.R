@@ -3,12 +3,34 @@ testMeClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "testMeClass",
     inherit = testMeBase,
     private = list(
+        .smartObjs=list(),
         .init=function() {
-            mark(self$results)
-            
+         mark("testme init")
+          
+          
+          aSmartObj                <- SmartTable$new(self$results$oneSmartTable)
+          aSmartObj$initSource     <- private$.my_init1
+          aSmartObj$runSource      <- private$.my_run1
+          if (TRUE)
+              aSmartObj$setColumnVisible<-"mobile"
+          
+          ladd(private$.smartObjs) <- aSmartObj
+
+          aSmartObj                <- SmartArray$new(self$results$keylessArray)
+          aSmartObj$initSource     <- private$.my_initArray1
+          aSmartObj$runSource     <-  private$.my_runArray1
+          ladd(private$.smartObjs) <- aSmartObj
+          
+          for (tab in private$.smartObjs) {
+            tab$initTable()
+          }
+          
+          
         },
         .run = function() {
 
+          mark("testme run")
+          
             # `self$data` contains the data
             # `self$options` contains the options
             # `self$results` contains the results object (to populate)
@@ -21,8 +43,7 @@ testMeClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             aTable$addRow(rowKey=1,list(info="Saved Columns",specs="Residuals",value=0))
             aTable$addRow(rowKey=2,list(info="Saved Columns",specs="Multi Residuals", value=0))
             
-            mark(str(self$results$multi_residuals))
-            
+
             if (self$options$residuals && self$results$residuals$isNotFilled()) {
                 aTable$setRow(rowKey=1,list( value=1))
                 
@@ -32,6 +53,14 @@ testMeClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 self$results$residuals$setValues(pdf)
             }
             
+
+            for (tab in private$.smartObjs) {
+              tab$runTable()
+            }
+            
+            
+            
+              
             if (self$options$multi_residuals && self$results$multi_residuals$isNotFilled()) {
 
                  n<-nrow(self$data)
@@ -48,5 +77,35 @@ testMeClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                  self$results$multi_residuals$setValues(pdf)
             }
             
-        })
+        },
+        .my_init1=function() {
+          
+          list(list(specs=1),list(specs=2))
+          
+        },
+        .my_run1=function() {
+          
+          list(list(value=1),list(value=2))
+          
+        },
+        
+        .my_initArray1=function() {
+          ## two tables passed as data.frames
+          l<-lapply(c("a1","a2"),function(x) {
+            df<-data.frame(specs=c(x,x))
+          })
+#          attr(l,"keys")<-c("aa1","aa2")    
+          names(l)<-c("a1","a2")
+          l
+        },
+        .my_runArray1=function() {
+          
+          list(
+            data.frame(value=c(1,2)),
+            data.frame(value=c(3,4))
+          )
+          
+        }
+        
+        )
 )
